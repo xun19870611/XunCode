@@ -1,1 +1,86 @@
+Razor 页面派生自 PageModel。 按照约定，PageModel 派生的类称为 <PageName>Model。
+此构造函数使用依赖关系注入将 RazorPagesMovieContext 添加到页。 所有已搭建基架的页面都遵循此模式。
 
+对页面发出请求时，OnGetAsync 方法向 Razor 页面返回影片列表。 调用 OnGetAsync 或 OnGet 以初始化页面的状态。 
+在这种情况下，OnGetAsync 将获得影片列表并显示出来
+
+当 OnGet 返回 void 或 OnGetAsync 返回 Task 时，不使用任何返回语句。 
+当返回类型是 IActionResult 或 Task<IActionResult> 时，必须提供返回语句。
+
+下面就是一个Index Rezor页面:
+		public class IndexModel : PageModel
+    {
+        private readonly aspnetcorestudy.Data.RezorPagesMovieContext _context;
+
+        public IndexModel(aspnetcorestudy.Data.RezorPagesMovieContext context)
+        {
+            _context = context;
+        }
+
+        public IList<Movie> Movie { get;set; }
+
+        public async Task OnGetAsync()
+        {
+            Movie = await _context.Movie.ToListAsync();
+        }
+    }
+
+Razor 可以从 HTML 转换为 C# 或 Razor 特定标记。 当 @ 符号后跟 Razor 保留关键字时，它会转换为 Razor 特定标记，否则会转换为 C#.
+@page 指令
+@page Razor 指令将文件转换为一个 MVC 操作，这意味着它可以处理请求。 
+@page 必须是页面上的第一个 Razor 指令。 @page 是转换到 Razor 特定标记的一个示例。
+@model 指令指定传递给 Razor 页面的模型类型。 在前面的示例中，@model 行使 PageModel 派生的类可用于 Razor 页面。 在页面上的 @Html.DisplayNameFor 和 @Html.DisplayFor HTML 帮助程序中使用该模型。
+
+asp-page="/Movies/Index" 标记帮助程序属性和值可以创建指向 /Movies/Index Razor 页面的链接。 asp-area 属性值为空，因此在链接中未使用区域。 有关详细信息，请参阅区域。
+
+@page
+@model aspnetcorestudy.IndexModel
+@{
+    ViewData["Title"] = "Index";
+}
+<h1>Index</h1>
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].ReleaseDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Genre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Price)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Movie) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReleaseDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
