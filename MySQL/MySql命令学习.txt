@@ -1,0 +1,92 @@
+
+-------CMD（Windows 管理员身份）------------
+
+---安装MySQL服务
+mysql -install 
+
+----启动MySQL
+net start mysql
+----停止MYSQL服务
+
+----登录MySQL  默认客户端的字符编码集为utf8
+mysql [-h localhost] -u root -p [数据库名] [--default-character-set=utf8]
+
+-------还原命令---------
+-----1 系统行命令
+mysqladmin -uroot -p create zfbz 
+mysql -u root -p zfbz < E:\4.学习\MySql学习\zfbz.sql
+----------注：在导入备份数据库前，db_name如果没有，是需要创建的； 而且与db_name.db中数据库名是一样的才可以导入。
+-----2 soure 方法
+mysql > use zfbz
+mysql > source E:\4.学习\MySql学习\zfbz.sql
+
+--------登录MySQL之后的命令----------
+----切换数据库
+mysql >use 数据库名;
+
+------ 查看当前使用的数据库名
+mysql >select database();
+
+----显示使用的字符集
+mysql >show variables like 'char%';
+---设置变量
+mysql >set character_set_database = utf8;
+
+----备份zfbz数据库（在cmd 下执行）
+mysqldump -u root -p zfbz > E:\4.学习\MySql学习\zfbz.sql
+
+-----显示所有数据库----
+mysql=> show databases;
+
+----------查看数据库信息
+MySQL=> show create database zfbz \G;
+
+---------删除数据库
+mysql=> drop database zfbz;
+
+--------查看数据库所使用的引擎
+mysql=> show variables like 'storage_engine';
+
+---------展示所有数据表
+mysql=> show tables;
+
+---------查看数据表结构
+mysql=> desc test;
+mysql=> show create table test \G; --查看表结构详细信息
+mysql=>alter table test rename test2; ---重命名test 表为test2.
+
+mysql中主要存储引擎：MyISAM,InnoDB,MEMORY(HEAP),BDB,FRDERATED等.
+mysql=> show engines;
+------更改表的数据库引擎方式
+mysql=> alter table test engine=InnoDB;
+mysql=> select now() as 当前日期时间,current_date() as 当前日期;
+
+date 和 datetime 类型: 
+YYMMDD => 990102:20190102  120102:20120102
+当YY为两位数时，00~69 代表2000~2069   70~99：1970~1999
+
+MySQL中字符串是不区分大小写的。比如 'a' 和 'A'比较是相等的，若要区分则添加 BINARY 关键字。
+
+字符串函数：
+mysql=> select char_length('aa'); --字符串长度
+mysql=> select concat('a','b'), concat_ws('-','a','b'); --字符串连接函数
+----下标长度从1开始。
+mysql=> select insert('Quest',0,2,'where'),insert('Quest',1,100,'where'),insert('Quest',-1,2,'where');
+mysql=> select replace('quert','e','w'); --替换函数
+substring,mid,instr,locate,position 函数  reverse 反转函数
+
+mysql=> select if(1=2,'a','b');
+mysql=> select ifnull(null,'b'); =>相当于Oracle的nvl函数
+
+----获取版本号
+mysql=> select version();
+mysql=> select connection_id();
+mysql=> set names utf8; --- 将字符集全部设置为UTF8.
+
+mysql=> show processlist;show full processlist; ---显示所有的进程连接情况. command ：sleep ,query ,connect
+
+
+
+
+
+
